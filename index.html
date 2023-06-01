@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Travel Itinerary Generator</title>
+    <style>
+      body {
+        font-family: Roboto, Arial;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+        background-image: url("https://source.unsplash.com/featured/?adventure");
+        height: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
+      h2 {
+        font-size: 24px;
+        margin: 0 0 16px 0;
+        text-align: center;
+      }
+
+      hr {
+        border: 1px solid #ccc;
+        margin: 16px 0;
+      }
+
+      form {
+        width: 500px;
+        margin: 0 auto;
+      }
+
+      label {
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-bottom: 16px;
+      }
+
+      button {
+        background-color: #000;
+        color: #fff;
+        font-size: 16px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      div#itinerary {
+        margin: 0 0 16px 0;
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #f9f9f9;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Travel Itinerary Generator </h2>
+    <hr />
+    <form onsubmit="handleSubmit(event)">
+      <label for="search">Search for a travel destination:</label>
+      <input type="text" id="search" placeholder="e.g. Gujarat Odisha" />
+      <button type="submit">Generate Itinerary</button>
+    </form>
+    <div id="itinerary"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script >
+      // Replace 'YOUR_API_KEY' with your actual OpenAI API key
+      const apiKey = "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";
+
+      async function generateItinerary(query) {
+        try {
+          const response = await axios.post(
+            "https://api.openai.com/v1/engines/davinci/codex/completions",
+            {
+              prompt: `Generate a travel itinerary for ${query}`,
+              max_tokens: 2048,
+              stop: "\n\n"
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${apiKey}`
+              }
+            }
+          );
+
+          const itinerary = response.data.choices[0].text.replace(/\n/g, '');
+          document.getElementById("itinerary").textContent = itinerary;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      function handleSubmit(event){
+        event.preventDefault();
+        const query = document.getElementById("search").value;
+        generateItinerary(query);
+      }
+    </script>
+    
+  </body>
+</html>
+ 
